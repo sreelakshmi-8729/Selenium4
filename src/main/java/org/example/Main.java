@@ -23,14 +23,14 @@ public class Main {
     @Test(priority = 1)
     public void verifyLoginPage() throws InterruptedException {
         driver.navigate().to("https://practicetestautomation.com/practice-test-login/");
-        Thread.sleep(Duration.ofSeconds(8));
+        Thread.sleep(8000L);
         WebElement username = driver.findElement(By.xpath("//input[@name='username']"));
         WebElement password = driver.findElement(By.xpath("//input[@name='password']"));
         username.sendKeys("student");
         password.sendKeys("Password123");
         WebElement button = driver.findElement(By.id("submit"));
         button.click();
-        Thread.sleep(Duration.ofSeconds(5));
+        Thread.sleep(5000L);
         List<WebElement> elements = driver.findElements(By.xpath("//h1[text()='Logged In Successfully']"));
         Assert.assertEquals(elements.size(), 1, "Logged In Successfully message is not displayed");
 
@@ -45,14 +45,27 @@ public class Main {
         driver.navigate().to("https://practicetestautomation.com/practice-test-login/");
         WebElement invalidUsername = driver.findElement(By.xpath("//input[@name='username']"));
         invalidUsername.sendKeys("abcdefgh");
+        WebElement Password = driver.findElement(By.xpath("//input[@name='password']"));
+        Password.sendKeys("Password123");
+        WebElement button = driver.findElement(By.xpath("//button[text()='Submit']"));
+        button.sendKeys(Keys.ENTER);
+        Thread.sleep(3000L);
+        List<WebElement> errorMsgList = driver.findElements(By.xpath("//div[text()='Your username is invalid!']"));
+        Assert.assertEquals(errorMsgList.size(), 1, "Error message is not displaying");
+
+    }
+    @Test(priority = 3)
+    public void invalidLoginPassword() throws InterruptedException {
+        driver.navigate().to("https://practicetestautomation.com/practice-test-login/");
+        WebElement Username = driver.findElement(By.xpath("//input[@name='username']"));
+        Username.sendKeys("student");
         WebElement invalidPassword = driver.findElement(By.xpath("//input[@name='password']"));
         invalidPassword.sendKeys("fgfg@22324");
         WebElement button = driver.findElement(By.xpath("//button[text()='Submit']"));
         button.sendKeys(Keys.ENTER);
-        Thread.sleep(Duration.ofSeconds(3));
-        List<WebElement> errorMsgList = driver.findElements(By.xpath("//div[text()='Your username is invalid!']"));
+        Thread.sleep(3000L);
+        List<WebElement> errorMsgList = driver.findElements(By.xpath("//div[text()='Your password is invalid!']"));
         Assert.assertEquals(errorMsgList.size(), 1, "Error message is not displaying");
-
     }
 
     @BeforeTest
