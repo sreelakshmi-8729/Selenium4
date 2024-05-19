@@ -1,14 +1,18 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
 
-<suite name="Suite1" verbose="1" >
+<suite name="Suite1" verbose="1" parallel="methods" thread-count="2">
     <test name="Nopackage" >
         <classes>
 <!--            <class name="org.example.LoginPageValidations" />-->
             <class name="org.example.LoginPageValidations">
                 <methods>
-                    <include name="verifyLoginPage"/>
+                    <parameter name="correctUsername" value="student"></parameter>
+                    <parameter name="correctPassword" value="Password123"></parameter>
+                    <parameter name="wrongUsername" value="abcdefgh"></parameter>
+                    <parameter name="wrongPassword" value="fgfg@22324"></parameter>
+                    <include name="verifyLoginPageWithCorrectUserNameAndPassword"/>
                     <include name="invalidLoginNegativeUsernameTest"/>
-                    <exclude name="invalidLoginPassword"/>
+                    <include name="invalidLoginPassword"/>
                 </methods>
             </class>
         </classes>
