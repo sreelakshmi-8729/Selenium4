@@ -11,12 +11,11 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import java.time.Duration;
 import java.util.List;
 
 //this comment only in develop branch
 @Test
-public class Main {
+public class LoginPageValidations {
     WebDriver driver = null;
     Boolean value = null;
 
