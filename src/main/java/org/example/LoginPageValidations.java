@@ -7,26 +7,25 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import java.util.List;
 
 //this comment only in develop branch
-@Test
 public class LoginPageValidations {
-    WebDriver driver = null;
+    ThreadLocal<WebDriver> localDriver = new ThreadLocal<>();
     Boolean value = null;
 
-    @Test(priority = 1)
-    public void verifyLoginPage() throws InterruptedException {
+    @Parameters({"correctUsername","correctPassword"})
+    @Test
+    public void verifyLoginPageWithCorrectUserNameAndPassword(String  username, String password) throws InterruptedException {
+       WebDriver driver =localDriver.get();
         driver.navigate().to("https://practicetestautomation.com/practice-test-login/");
         Thread.sleep(8000L);
-        WebElement username = driver.findElement(By.xpath("//input[@name='username']"));
-        WebElement password = driver.findElement(By.xpath("//input[@name='password']"));
-        username.sendKeys("student");
-        password.sendKeys("Password123");
+        WebElement usernameInputBox = driver.findElement(By.xpath("//input[@name='username']"));
+        WebElement passwordInputBox = driver.findElement(By.xpath("//input[@name='password']"));
+        usernameInputBox.sendKeys(username);
+        passwordInputBox.sendKeys(password);
         WebElement button = driver.findElement(By.id("submit"));
         button.click();
         Thread.sleep(5000L);
@@ -39,13 +38,15 @@ public class LoginPageValidations {
         Assert.assertTrue(buttonIsDisplayed, "Logout button is not displayed");
     }
 
-    @Test(priority = 2)
-    public void invalidLoginNegativeUsernameTest() throws InterruptedException {
+    @Parameters({"wrongUsername","correctPassword"})
+    @Test
+    public void invalidLoginNegativeUsernameTest(String username, String password) throws InterruptedException {
+        WebDriver driver =localDriver.get();
         driver.navigate().to("https://practicetestautomation.com/practice-test-login/");
         WebElement invalidUsername = driver.findElement(By.xpath("//input[@name='username']"));
-        invalidUsername.sendKeys("abcdefgh");
+        invalidUsername.sendKeys(username);
         WebElement Password = driver.findElement(By.xpath("//input[@name='password']"));
-        Password.sendKeys("Password123");
+        Password.sendKeys(password);
         WebElement button = driver.findElement(By.xpath("//button[text()='Submit']"));
         button.sendKeys(Keys.ENTER);
         Thread.sleep(3000L);
@@ -53,13 +54,16 @@ public class LoginPageValidations {
         Assert.assertEquals(errorMsgList.size(), 1, "Error message is not displaying");
 
     }
-    @Test(priority = 3)
-    public void invalidLoginPassword() throws InterruptedException {
+
+    @Parameters({"correctUsername","wrongPassword"})
+    @Test
+    public void invalidLoginPassword(String username, String password) throws InterruptedException {
+        WebDriver driver =localDriver.get();
         driver.navigate().to("https://practicetestautomation.com/practice-test-login/");
         WebElement Username = driver.findElement(By.xpath("//input[@name='username']"));
-        Username.sendKeys("student");
+        Username.sendKeys(username);
         WebElement invalidPassword = driver.findElement(By.xpath("//input[@name='password']"));
-        invalidPassword.sendKeys("fgfg@22324");
+        invalidPassword.sendKeys(password);
         WebElement button = driver.findElement(By.xpath("//button[text()='Submit']"));
         button.sendKeys(Keys.ENTER);
         Thread.sleep(3000L);
@@ -67,15 +71,18 @@ public class LoginPageValidations {
         Assert.assertEquals(errorMsgList.size(), 1, "Error message is not displaying");
     }
 
-    @BeforeTest
+    @BeforeMethod
     public void setUp() {
         WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
+        WebDriver driver = new ChromeDriver();
         driver.manage().window().maximize();
+        localDriver.set(driver);
     }
 
-    @AfterTest
+    @AfterMethod
+
     public void tearDown() {
+        WebDriver driver =localDriver.get();
         driver.quit();
     }
 }
